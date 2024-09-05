@@ -1,0 +1,57 @@
+function findMembers(req, res, next) {
+  //console.log(req.swagger.params.member.value.first_name);
+  Members.findAll({
+    attributes: { exclude: ['system_id', 'createdAt', 'updatedAt'] },
+    where: {
+      [Op.or]: [
+        { member_id: req.swagger.params.member.value.member_id },
+        {
+          first_name: {
+            [Op.like]: `%${req.swagger.params.member.value.first_name}%`,
+          }
+        },
+        {
+          last_name: {
+            [Op.like]: `%${req.swagger.params.member.value.last_name}%`,
+          }
+        },
+        {
+          email: req.swagger.params.member.value.email
+        },
+        {
+          phone_number: req.swagger.params.member.value.phone_number
+        },
+        {
+          address1: {
+            [Op.like]: `%${req.swagger.params.member.value.address1}%`,
+          }
+        },
+        {
+          city: {
+            [Op.like]: `%${req.swagger.params.member.value.city}%`,
+          }
+        },
+        {
+          state: req.swagger.params.member.value.state
+        },
+        {
+          zip: req.swagger.params.member.value.zip
+        }
+        ,
+        {
+          status: req.swagger.params.member.value.status
+        }
+      ]
+    }
+  })
+    .then(data => {
+      if (data != null) {
+        res.json({ error: false, members: data });
+      } else {
+        res.status(204).send();
+      }
+    }).catch(err => {
+      res.status(204).send({ message: err.message || "some error occured while processing the request" });
+    }
+    );
+}
