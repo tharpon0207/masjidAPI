@@ -147,7 +147,8 @@ function addNewMember(req, res, next) {
         res.status(500).send("some error occured while processing the request");
       }
     }).catch(err => {
-      res.status(500).send({ message: err.message || "some error occured while processing the request" });
+      console.log(err);
+      res.status(500).send({ message: err.parent.sqlMessage || "some error occured while processing the request" });
     }
     );
 }

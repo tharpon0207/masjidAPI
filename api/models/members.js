@@ -3,26 +3,39 @@ const { DataTypes } = require('sequelize');
 
 const Members = sequelize.define('members', {
     system_id: {
-      type: DataTypes.BIGINT,
-      autoIncrement: true,
-      allowNull: false,
+        type: DataTypes.BIGINT,
+        autoIncrement: true,
+        allowNull: false,
     },
     member_id: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-      allowNull: false,
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                args: true,
+                msg: "Member ID can't be null."
+            }
+        },
+        unique: {
+            args: true,
+            msg: 'Member ID already in use!'
+        }
     },
     first_name: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
+    },
     last_name: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
+    },
     email: {
         type: DataTypes.STRING,
         allowNull: true,
+        validate: {
+            isEmail: { msg: "Please provide a valid email address" }
+        }
     },
     phone_number: {
         type: DataTypes.STRING,
@@ -55,15 +68,30 @@ const Members = sequelize.define('members', {
     auto_withdrawal: {
         type: DataTypes.TINYINT(1),
         allowNull: true,
-        default: 0
+        default: 0,
+        validate: {
+            customValidator(value) {
+                if (value < 0 || value > 1) {
+                    throw new Error("auto_withdrawal can be 0 or 1");
+                }
+            },
+            isInt: true,
+
+        }
     },
     gender: {
         type: DataTypes.STRING(8),
         allowNull: false,
+        validate: {
+            isIn: {
+                args: ['M', 'F'],
+                msg: "Gender can be M or F"
+            }
+        }
     },
     share_info: {
         type: DataTypes.TINYINT(1),
-        allowNull: false
+        allowNull: false,
     },
     status: {
         type: DataTypes.TINYINT(1),
@@ -71,12 +99,12 @@ const Members = sequelize.define('members', {
         default: 0
     },
 
-   createdAt: {
+    createdAt: {
         type: DataTypes.DATE,
         allowNull: true,
         field: 'create_date',
         default: DataTypes.NOW
-        
+
     },
     updatedAt: {
         type: DataTypes.DATE,
@@ -84,6 +112,6 @@ const Members = sequelize.define('members', {
         field: 'approval_date',
         default: DataTypes.NOW
     }
-  });
+});
 
-  module.exports = Members;
+module.exports = Members;
