@@ -11,7 +11,7 @@ module.exports = { getAllMembers, getMemberInfo, findMembers, addNewMember }
 
 
 function getAllMembers(req, res, next) {
-  Members.findAll({ attributes: { exclude: ['system_id', 'createdAt', 'updatedAt'] } })
+  Members.findAll({ attributes: { exclude: ['system_id'] } })
     .then(data => {
       if (data != null) {
         res.json({ error: false, members: data });
@@ -132,7 +132,7 @@ function addNewMember(req, res, next) {
   Members.create(newMember)
     .then(data => {
       if (data !== null) {
-        Members.findOne({ where: { member_id: member.member_id }, attributes: { exclude: ['system_id', 'createdAt', 'updatedAt'] } })
+        Members.findOne({ where: { member_id: member.member_id }, attributes: { exclude: ['system_id', 'create_date', 'approval_date'] } })
           .then(data => {
             if (data != null) {
               res.json({ error: false, member: data });
@@ -148,7 +148,7 @@ function addNewMember(req, res, next) {
       }
     }).catch(err => {
       console.log(err);
-      res.status(500).send({ message: err.parent.sqlMessage || "some error occured while processing the request" });
+      res.status(500).send({ message: err.message || "some error occured while processing the request" });
     }
     );
 }

@@ -60,6 +60,17 @@ const Members = sequelize.define('members', {
     zip: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            len: {
+                args: [5,5],
+                msg: "Please provide a valid zip code length."
+            },
+            isNumeric:{
+                args: true,
+                msg: "Please provide a valid zip code."
+            }
+
+        }
     },
     subscription: {
         type: DataTypes.DECIMAL(4, 2),
@@ -85,7 +96,7 @@ const Members = sequelize.define('members', {
         validate: {
             isIn: {
                 args: ['M', 'F'],
-                msg: "Gender can be M or F"
+                msg: "Gender can only be either M or F"
             }
         }
     },
@@ -99,19 +110,18 @@ const Members = sequelize.define('members', {
         default: 0
     },
 
-    createdAt: {
+    create_date: {
         type: DataTypes.DATE,
-        allowNull: true,
-        field: 'create_date',
-        default: DataTypes.NOW
+        allowNull: true
 
     },
-    updatedAt: {
+    approval_date: {
         type: DataTypes.DATE,
-        allowNull: true,
-        field: 'approval_date',
-        default: DataTypes.NOW
+        allowNull: true
     }
-});
+},
+    {
+        timestamps: false
+    });
 
 module.exports = Members;

@@ -158,7 +158,7 @@ definitions:
               type: string
               description: Member's zip code
             subscription:
-              type: string
+              type: integer
               description: Member's monthly subscription
             auto_withdrawal:
               type: integer
@@ -171,7 +171,8 @@ definitions:
               description: Member's monthly subscription
             status:
               type: integer
-              description: Membership status
+              description: Membership status,
+
 
   MemberInfoResponse:
     required:
@@ -214,7 +215,7 @@ definitions:
               type: string
               description: Member's zip code
             subscription:
-              type: string
+              type: integer
               description: Member's monthly subscription
             auto_withdrawal:
               type: integer
