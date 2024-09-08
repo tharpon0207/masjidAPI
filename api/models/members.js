@@ -56,25 +56,41 @@ const Members = sequelize.define('members', {
     state: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            isIn: {
+                args: [['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']]
+                ,
+                msg: "Must be a valid US State initial (2 characters)"
+            }
+        }
     },
     zip: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
             len: {
-                args: [5,5],
+                args: [5, 5],
                 msg: "Please provide a valid zip code length."
             },
-            isNumeric:{
+            isNumeric: {
                 args: true,
                 msg: "Please provide a valid zip code."
             }
-
         }
     },
     subscription: {
         type: DataTypes.DECIMAL(4, 2),
         allowNull: false,
+        validate: {
+            customValidator(value) {
+                if (value < 0) {
+                    throw new Error("Subscription can not be negative!");
+                }
+                else if (value > 9999) {
+                    throw new Error("Subscription is too large!")
+                }
+            },
+        }
     },
     auto_withdrawal: {
         type: DataTypes.TINYINT(1),
@@ -87,7 +103,6 @@ const Members = sequelize.define('members', {
                 }
             },
             isInt: true,
-
         }
     },
     gender: {
@@ -103,11 +118,25 @@ const Members = sequelize.define('members', {
     share_info: {
         type: DataTypes.TINYINT(1),
         allowNull: false,
+        validate: {
+            customValidator(value) {
+                if (value < 0 || value > 1) {
+                    throw new Error("Would you like to share the information with others 1 for Yes, 0 for No.");
+                }
+            },
+        }
     },
     status: {
         type: DataTypes.TINYINT(1),
         allowNull: true,
-        default: 0
+        default: 0,
+        validate: {
+            customValidator(value) {
+                if (value < 0 || value > 1) {
+                    throw new Error("status can be 0 or 1");
+                }
+            },
+        }
     },
 
     create_date: {
