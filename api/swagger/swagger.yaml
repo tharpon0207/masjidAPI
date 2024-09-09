@@ -37,7 +37,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
     post:
-      description: Find all members
+      description: Add new member
       # used as the method name of the controller
       operationId: addNewMember
       parameters:
@@ -60,6 +60,30 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    patch:
+      description: update member information or status.
+      # used as the method name of the controller
+      operationId: updateMember
+      parameters:
+        - name: member
+          description: Pass Mandatory fields i.e. member_id
+          in: body
+          required: false
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UpdateMemberInput"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/MemberInfoResponse"
+
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"        
   /member/{id}:
     # binds a127 app logic to a route
     x-swagger-router-controller: member
@@ -263,7 +287,6 @@ definitions:
       status:
         type: integer
         description: Membership status
-  
   createMemberInput:
     type: object
     properties:
@@ -324,6 +347,56 @@ definitions:
       - subscription
       - gender
       - share_info
+  UpdateMemberInput:
+    type: object
+    properties:
+      member_id:
+        type: string
+        description: Masjid member Id
+      first_name:
+        type: string
+        description: First Name of the user
+      last_name:
+        type: string
+        description: Last Name of the user
+      email:
+        type: ['string']
+        description: Member's email id
+      phone_number: 
+        type: string
+        description: Member's phone number
+      address1:
+        type: string
+        description: Member's address1
+      address2:
+        type: ['string']
+        description: Member's address2
+      city:
+        type: string
+        description: Member's city
+      state:
+        type: string
+        description: Member's state
+      zip:
+        type: string
+        description: Member's zip code
+      subscription:
+        type: number
+        description: Subscription amount per month
+      auto_withdrawal:
+        type: integer
+        description: Subscription auto withdrawal 1/0.
+      gender:
+        type: string
+        description: Member's gender M/F.
+      share_info:
+        type: integer
+        description: Does Member want to share his/her info 1/0.
+      status:
+        type: integer
+        description: Membership status
+    required:
+      - member_id
       
 
   ErrorResponse:

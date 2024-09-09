@@ -7,7 +7,7 @@ const { subscribe } = require('diagnostics_channel');
 let Op = Sequelize.Op;
 
 
-module.exports = { getAllMembers, getMemberInfo, findMembers, addNewMember }
+module.exports = { getAllMembers, getMemberInfo, findMembers, addNewMember,updateMember }
 
 
 function getAllMembers(req, res, next) {
@@ -93,7 +93,7 @@ function findMembers(req, res, next) {
     );
 }
 
-//TO DO
+
 function addNewMember(req, res, next) {
   let member = req.swagger.params.member.value;
   //req.body.member_id
@@ -147,9 +147,91 @@ function addNewMember(req, res, next) {
         res.status(500).send("some error occured while processing the request");
       }
     }).catch(err => {
-      console.log(err);
       res.status(500).send({ message: err.message || "some error occured while processing the request" });
     }
     );
 }
+function updateMember(req, res, next) {
+  let member = req.swagger.params.member.value;
+  let newMember = {};
+  if (member.first_name !== null) {
+    newMember.first_name = member.first_name;
+  };
+  if (member.last_name !== null) {
+    newMember.last_name = member.last_name;
+  };
+  if (member.phone_number !== null) {
+    newMember.phone_number = member.phone_number;
+  };
+  if (member.address1 !== null) {
+    newMember.address1 = member.address1;
+  };
+  if (member.city !== null) {
+    newMember.city = member.city;
+  };
+  if (member.state !== null) {
+    newMember.state = member.state;
+  };
+  if (member.zip !== null) {
+    newMember.zip = member.zip;
+  };
+  if (member.subscription !== null) {
+    newMember.subscription = member.subscription;
+  };
+  if (member.gender !== null) {
+    newMember.gender = member.gender;
+  };
+  if (member.share_info !== null) {
+    newMember.share_info = member.share_info;
+  };
+  if (member.auto_withdrawal !== null) {
+    newMember.auto_withdrawal = member.auto_withdrawal;
+  };
+  if (member.state !== null) {
+    newMember.state = member.state;
+  };
+  if (member.address2 !== null) {
+    newMember.address2 = member.address2;
+  };
+  if (member.status !== null) {
+    newMember.status = member.status;
+  };
+  if (member.create_date !== null) {
+    newMember.create_date = member.create_date;
+  };
+  if (member.approval_date !== null) {
+    newMember.approval_date = member.approval_date;
+  };
+  if (member.auto_withdrawal !== null) {
+    newMember.auto_withdrawal = member.auto_withdrawal;
+  };
+
+  Members.update(newMember,
+    {
+      where: {
+        member_id: member.member_id,
+      },
+    },
+  ).then(data => {
+    if (data[0] !== 0) {
+      Members.findOne({ where: { member_id: member.member_id }, attributes: { exclude: ['system_id', 'create_date', 'approval_date'] } })
+        .then(data => {
+          if (data != null) {
+            res.json({ error: false, member: data });
+          } else {
+            res.status(500).send("some error occured while processing the request");
+          }
+        }).catch(err => {
+          res.status(204).send({ message: err.message || "some error occured while processing the request" });
+        }
+        );
+    } else {
+      res.status(204).send({ message: err.message || "Member not found." });
+    }
+  }).catch(err => {
+    res.status(204).send({ message: err.message || "some error occured while processing the request" });
+  }
+  );
+}
+
 
