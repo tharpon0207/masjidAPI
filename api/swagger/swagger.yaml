@@ -25,6 +25,19 @@ paths:
       description: Find all members
       # used as the method name of the controller
       operationId: getAllMembers
+      parameters:
+        - in: query
+          name: offset
+          type: integer
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          default: 0
+        - in: query
+          name: limit
+          type: integer
+          description: The numbers of items to return.
+          required: false
+          default: 10
       responses:
         "200":
           description: Success
@@ -146,6 +159,14 @@ definitions:
     properties:
       error:
         type: boolean
+      count:
+        type: integer
+      total_page:
+        type: integer
+      offset:
+        type: integer
+      limit:
+        type: integer
       members:
         type: array
         items:

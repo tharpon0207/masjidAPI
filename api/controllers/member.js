@@ -7,14 +7,22 @@ const { subscribe } = require('diagnostics_channel');
 let Op = Sequelize.Op;
 
 
-module.exports = { getAllMembers, getMemberInfo, findMembers, addNewMember,updateMember }
+module.exports = { getAllMembers, getMemberInfo, findMembers, addNewMember, updateMember }
 
 
 function getAllMembers(req, res, next) {
-  Members.findAll({ attributes: { exclude: ['system_id'] } })
+  let o = req.swagger.params.offset.value;
+  let l = parseInt(req.swagger.params.limit.value);
+
+
+  Members.findAndCountAll({
+    attributes: { exclude: ['system_id'] }, offset: o,
+    limit: l,
+  })
     .then(data => {
       if (data != null) {
-        res.json({ error: false, members: data });
+        let total = (data.count % l == 0) ? data.count / l : parseInt(data.count / l) + 1;
+        res.json({ error: false, count: data.count, total_page: total, offset: o, limit: l, members: data.rows });
       } else {
         res.status(204).send();
       }
