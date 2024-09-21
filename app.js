@@ -2,6 +2,7 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+var cors = require('cors')
 module.exports = app; // for testing
 
 var config = {
@@ -15,6 +16,18 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   swaggerExpress.register(app);
 
   var port = process.env.PORT || 10010;
+
+  app.use(cors());
+  const { createProxyMiddleware } = require('http-proxy-middleware');
+  app.use('/*', createProxyMiddleware({
+      target: 'http://localhost:3000/', //original url
+      changeOrigin: true,
+      //secure: false,
+      onProxyRes: function (proxyRes, req, res) {
+         proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+      }
+  }));
+
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/hello']) {

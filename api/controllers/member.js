@@ -3,7 +3,7 @@
 var util = require('util');
 const Members = require('../models/members');
 const { Sequelize, where } = require('sequelize');
-const { subscribe } = require('diagnostics_channel');
+//const { subscribe } = require('diagnostics_channel');
 let Op = Sequelize.Op;
 
 

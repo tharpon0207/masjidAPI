@@ -18,6 +18,32 @@ consumes:
 produces:
   - application/json
 paths:
+  /auth:
+    x-swagger-router-controller: authentication
+    post:
+      description: Bearer token
+      # used as the method name of the controller
+      operationId: getToken
+      parameters:
+        - name: credentials
+          description: Pass all Mandatory login credentials i.e. user_name, password
+          in: body
+          required: true
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CredentialRequest"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CredentialResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /member:
     # binds a127 app logic to a route
     x-swagger-router-controller: member
@@ -418,7 +444,30 @@ definitions:
         description: Membership status
     required:
       - member_id
-      
+  
+  CredentialRequest:
+    type: object
+    properties:
+      user_name:
+        type: string
+        description: Valid username
+      password:
+        type: string
+        description: valid password
+    required:
+      - user_name
+      - password
+  
+  CredentialResponse:
+    properties:
+      error:
+        type: boolean
+      token:
+        type: string
+        description: JWT token
+    required:
+      - error
+      - token
 
   ErrorResponse:
     required:
@@ -426,4 +475,3 @@ definitions:
     properties:
       message:
         type: string
-    
