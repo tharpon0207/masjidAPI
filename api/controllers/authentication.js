@@ -37,6 +37,20 @@ function getToken(req, res, next) {
       if (data != null) {
         try {
           const token = jwt.sign({ id: userName }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
+          // Update User Table with new Token
+          let newUser = {};
+          newUser.token=token;
+          newUser.status=1;
+          Users.update(newUser,
+            {
+              where: {
+                user_name: userName,
+              },
+            },
+          ).then(data => {
+            console.log(data);
+          });
+          // Return Token to API caller 
           res.json({ error: false, token: token });
         } catch (err) {
           res.status(500).json({ error: true, message: err });
