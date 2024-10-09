@@ -38,6 +38,16 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/CredentialResponse"
+        "401":
+          description: Unauthorized Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UnauthorizedError"
+        "500":
+          description: Server Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ServerError"
         # responses may fall through to errors
         default:
           description: Error
@@ -468,6 +478,21 @@ definitions:
     required:
       - error
       - token
+  UnauthorizedError:
+    properties:
+      error:
+        type: boolean
+      message:
+        type: string
+        description: error message
+
+  ServerError:
+    properties:
+      error:
+        type: boolean
+      message:
+        type: string
+        description: server message
 
   ErrorResponse:
     required:

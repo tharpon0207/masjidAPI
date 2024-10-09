@@ -1,32 +1,50 @@
 'use strict';
 
-var util = require('util');
+const bcrypt = require ('bcrypt');
+const util = require('util');
 const Users = require('../models/users');
 const { Sequelize, where } = require('sequelize');
 
-const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+require("dotenv").config();
 
-dotenv.config();
 
-module.exports = { getToken }
+module.exports = { getToken };
+
+
+const salt = "$2b$10$DTIUElO2vmp0MM2s2Ltp6O";
+
+function encrypt(password, salt) {
+  return bcrypt.hashSync(password, salt);
+}
+function encryptWithRandomSalt(password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+}
+
+function isSamePassword(password, hash) {
+  return bcrypt.compareSync(password, hash)
+}
 
 function getToken(req, res, next) {
+  // Log the incoming request body
+
   let userName = req.body.user_name;
   let password = req.body.password;
 
-    Users.findOne({ where: { user_name: userName, password:password,  status: 1} })
-      .then(data => {
-        if (data != null) {
-          console.log("TOKEN : ");
-          const token = jwt.sign({id:userName}, process.env.TOKEN_SECRET,{});
-          console.log(token);
-          res.json({ error: false, token: data });
-        } else {
-          res.json({ error: true, token: "Invalid username or password" });
+
+  Users.findOne({ where: { user_name: userName, password:encrypt(password, salt) , status: 1 } })
+    .then(data => {
+      if (data != null) {
+        try {
+          const token = jwt.sign({ id: userName }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
+          res.json({ error: false, token: token });
+        } catch (err) {
+          res.status(500).json({ error: true, message: err });
         }
-      }).catch(err => {
-        res.status(204).send({ message: err.message || "some error occured while processing the request" });
+      } else {
+        res.status(401).json({ error: true, message: "Invalid username or password" });
       }
-      );
-  }
+    }).catch(err => {
+      res.status(500).json({ error: true, message: err });
+    });
+}
