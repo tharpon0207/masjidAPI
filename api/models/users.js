@@ -48,7 +48,11 @@ const Users = sequelize.define('users', {
                     }
                 },
             }
-        }
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            allowNull: true
+            }
 },
     {
         timestamps: false

@@ -41,6 +41,7 @@ function getToken(req, res, next) {
           let newUser = {};
           newUser.token=token;
           newUser.status=1;
+          newUser.updated_at=Sequelize.fn('NOW');
           Users.update(newUser,
             {
               where: {
