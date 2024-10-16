@@ -9,7 +9,6 @@ let Op = Sequelize.Op;
 module.exports = { addEvent , getAllEvents}
 
 function addEvent(req, res, next) {
-    console.log("Add new Event");
     let event = req.swagger.params.event.value;
     //req.body.member_id
     let newEvent = {
@@ -31,14 +30,16 @@ function addEvent(req, res, next) {
     if (event.status !== null) {
         newEvent.status = event.status;
     };
-    
+    //console.log(newEvent);
     Events.create(newEvent)
       .then(data => {
         if (data !== null) {
-            Events.findOne({ where: { date: event.date,  title: event.title }, attributes: { exclude: ['created_at', 'updated_at'],  include: ['description', 'desc'] } })
+            Events.findOne({ where: { title: event.title }, attributes: ['id',[Sequelize.fn('MONTHNAME',Sequelize.col('date')),'month'], [Sequelize.fn('DAY',Sequelize.col('date')),'day'],'start','end','title',['description', 'desc'],'publish','status'] })
             .then(data => {
               if (data != null) {
-                res.json({ error: false, member: data });
+                //data.month = (data.month).substring(0, 3);
+               console.log(data);
+                res.json({ error: false, event: data });
               } else {
                 res.status(500).send("some error occured while processing the request");
               }
