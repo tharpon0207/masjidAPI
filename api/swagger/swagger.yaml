@@ -552,13 +552,13 @@ definitions:
           type: object
           properties:
             id:
-              type: string
+              type: integer
               description: Masjid event Id
             month:
               type: string
               description: First Three Digit of Month i.e. Jan 
             day:
-              type: string
+              type: integer
               description: Day of Month i.e. 27
             start:
               type: ['string','null']
@@ -576,7 +576,7 @@ definitions:
               type: integer
               description: Event publish status
             status:
-              type: string
+              type: integer
               description: event active status
               
   UnauthorizedError:
