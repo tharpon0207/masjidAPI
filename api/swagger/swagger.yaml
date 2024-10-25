@@ -121,7 +121,35 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"        
+            $ref: "#/definitions/ErrorResponse" 
+    get:
+      description: Find all members
+      # used as the method name of the controller
+      operationId: getAllEvents
+      parameters:
+        - in: query
+          name: offset
+          type: integer
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          default: 0
+        - in: query
+          name: limit
+          type: integer
+          description: The numbers of items to return.
+          required: false
+          default: 10
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AllEventResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"       
 
   /member:
     # binds a127 app logic to a route
@@ -613,6 +641,53 @@ definitions:
       error:
         type: boolean
       event:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Masjid event Id
+            month:
+              type: string
+              description: First Three Digit of Month i.e. Jan 
+            day:
+              type: integer
+              description: Day of Month i.e. 27
+            start:
+              type: ['string','null']
+              description: Event start time
+            end: 
+              type: string
+              description: Event end time
+            title:
+              type: string
+              description: Event short description.
+            desc:
+              type: ['string','null']
+              description: Event description.
+            publish:
+              type: integer
+              description: Event publish status
+            status:
+              type: integer
+              description: event active status
+  AllEventResponse:
+    required:
+      - error
+      - events
+    properties:
+      error:
+        type: boolean
+      count:
+        type: integer
+      total_page:
+        type: integer
+      offset:
+        type: integer
+      limit:
+        type: integer
+      events:
+        type: array
+        items:
           type: object
           properties:
             id:

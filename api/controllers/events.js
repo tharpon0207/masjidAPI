@@ -84,51 +84,51 @@ function updateEvent(req, res, next) {
   };
   //console.log(newEvent);
   Events.update(newEvent,
-      {
-        where: {
-          id: event.id
-        },
+    {
+      where: {
+        id: event.id
       },
-    ).then(data => {
-      if (data !== null) {
-        Events.findOne({
-          where: { id: event.id },
-          attributes: ['id', [Sequelize.fn('MONTHNAME', Sequelize.col('date')), 'month'], [Sequelize.fn('DAY', Sequelize.col('date')), 'day'], 'start', 'end', 'title', ['description', 'desc'], 'publish', 'status']
-        })
-          .then(data => {
-            if (data != null) {
-              console.log(data);
-              res.json({ error: false, event: data });
-            } else {
-              res.status(500).json({ error: true, message: "some error occured while processing the request" });
-            }
-          }).catch(err => {
-            res.status(500).json({ error: true, message: err.message || "some error occured while processing the request" });
+    },
+  ).then(data => {
+    if (data !== null) {
+      Events.findOne({
+        where: { id: event.id },
+        attributes: ['id', [Sequelize.fn('MONTHNAME', Sequelize.col('date')), 'month'], [Sequelize.fn('DAY', Sequelize.col('date')), 'day'], 'start', 'end', 'title', ['description', 'desc'], 'publish', 'status']
+      })
+        .then(data => {
+          if (data != null) {
+            console.log(data);
+            res.json({ error: false, event: data });
+          } else {
+            res.status(500).json({ error: true, message: "some error occured while processing the request" });
           }
-          );
-      } else {
-        res.status(500).send("some error occured while processing the request");
-      }
-    }).catch(err => {
-      console.log(err);
-      res.status(400).json({ error: true, message: err.message || "some error occured while processing the request" });
+        }).catch(err => {
+          res.status(500).json({ error: true, message: err.message || "some error occured while processing the request" });
+        }
+        );
+    } else {
+      res.status(500).send("some error occured while processing the request");
     }
-    );
+  }).catch(err => {
+    console.log(err);
+    res.status(400).json({ error: true, message: err.message || "some error occured while processing the request" });
+  }
+  );
 }
 
 function getAllEvents(req, res, next) {
-  let o = req.swagger.params.offset.value;
-  let l = parseInt(req.swagger.params.limit.value);
+  let offset = req.swagger.params.offset.value;
+  let limit = parseInt(req.swagger.params.limit.value);
 
 
-  Members.findAndCountAll({
-    attributes: { exclude: ['system_id'] }, offset: o,
-    limit: l,
+  Events.findAndCountAll({
+    attributes: ['id', [Sequelize.fn('MONTHNAME', Sequelize.col('date')), 'month'], [Sequelize.fn('DAY', Sequelize.col('date')), 'day'], 'start', 'end', 'title', ['description', 'desc'], 'publish', 'status'], offset: offset,
+    limit: limit,
   })
     .then(data => {
       if (data != null) {
-        let total = (data.count % l == 0) ? data.count / l : parseInt(data.count / l) + 1;
-        res.json({ error: false, count: data.count, total_page: total, offset: o, limit: l, members: data.rows });
+        let total = (data.count % limit == 0) ? data.count / limit : parseInt(data.count / limit) + 1;
+        res.json({ error: false, count: data.count, total_page: total, offset: offset, limit: limit, events: data.rows });
       } else {
         res.status(204).send();
       }
