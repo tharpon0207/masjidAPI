@@ -123,7 +123,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse" 
     get:
-      description: Find all members
+      description: Find all events
       # used as the method name of the controller
       operationId: getAllEvents
       parameters:
@@ -149,7 +149,103 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"       
+            $ref: "#/definitions/ErrorResponse"  
+  /announcement:
+    x-swagger-router-controller: announcements
+    post:
+      description: Add new announcement
+      # used as the method name of the controller
+      operationId: addAnnouncement
+      parameters:
+        - name: event
+          description: Pass all mandatory fields event date, start time, end time, title, publish status
+          in: body
+          required: true
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CreateAnnouncementInput"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CreateEventResponse"
+        "401":
+          description: Unauthorized Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UnauthorizedError"
+        "500":
+          description: Server Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ServerError"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    patch:
+      description: Update an announcement
+      # used as the method name of the controller
+      operationId: updateAnnouncement
+      parameters:
+        - name: event
+          description: Pass all mandatory fields event date, start time, end time, title, publish status
+          in: body
+          required: true
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UpdateAnnouncementInput"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CreateEventResponse"
+        "401":
+          description: Unauthorized Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UnauthorizedError"
+        "500":
+          description: Server Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ServerError"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse" 
+    get:
+      description: Find all announcements
+      # used as the method name of the controller
+      operationId: getAllAnnouncements
+      parameters:
+        - in: query
+          name: offset
+          type: integer
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          default: 0
+        - in: query
+          name: limit
+          type: integer
+          description: The numbers of items to return.
+          required: false
+          default: 10
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AllAnnouncementResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"     
 
   /member:
     # binds a127 app logic to a route
@@ -703,6 +799,119 @@ definitions:
               type: ['string','null']
               description: Event start time
             end: 
+              type: string
+              description: Event end time
+            title:
+              type: string
+              description: Event short description.
+            desc:
+              type: ['string','null']
+              description: Event description.
+            publish:
+              type: integer
+              description: Event publish status
+            status:
+              type: integer
+              description: event active status
+  CreateAnnouncementInput:
+    type: object
+    properties:
+      date:
+        type: string
+        description: Event date
+      title:
+        type: string
+        description: Event Title
+      description: 
+        type: ['string','null']
+        description: Event Description
+      publish:
+        type: integer
+        description: Event publish status
+      status:
+        type: integer
+        description: Event status
+    required:
+      - date
+      - title
+  CreateAnnouncementResponse:
+    required:
+      - error
+      - announcement
+    properties:
+      error:
+        type: boolean
+      announcement:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Masjid event Id
+            date:
+              type: string
+              description: Event end time
+            title:
+              type: string
+              description: Event short description.
+            desc:
+              type: ['string','null']
+              description: Event description.
+            publish:
+              type: integer
+              description: Event publish status
+            status:
+              type: integer
+              description: event active status
+  UpdateAnnouncementInput:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Event ID
+      date:
+        type: string
+        description: Event date
+      title:
+        type: string
+        description: Event Title
+      description: 
+        type: ['string','null']
+        description: Event Description
+      publish:
+        type: integer
+        description: Event publish status
+      status:
+        type: integer
+        description: Event status
+    required:
+      - id 
+      - date
+      - title
+  
+  AllAnnouncementResponse:
+    required:
+      - error
+      - announcements
+    properties:
+      error:
+        type: boolean
+      count:
+        type: integer
+      total_page:
+        type: integer
+      offset:
+        type: integer
+      limit:
+        type: integer
+      announcements:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Masjid event Id
+            date:
               type: string
               description: Event end time
             title:
