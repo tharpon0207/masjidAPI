@@ -376,6 +376,66 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /prayertimes:
+    x-swagger-router-controller: prayertimes
+    get:
+      description: Get prayer times
+      # used as the method name of the controller
+      operationId: getPrayerTimes
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UpdatePrayerTimeResponse"
+        "401":
+          description: Unauthorized Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UnauthorizedError"
+        "500":
+          description: Server Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ServerError"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    patch:
+      description: Update prayer times
+      # used as the method name of the controller
+      operationId: updatePrayerTime
+      parameters:
+        - name: time
+          description: Pass all mandatory fields for prayer time `fajr`, `dhuhr`, `asr`, `maghrib`, `isha`, jummah
+          in: body
+          required: true
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UpdatePrayerTimeInput"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UpdatePrayerTimeResponse"
+        "401":
+          description: Unauthorized Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UnauthorizedError"
+        "500":
+          description: Server Error
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/ServerError"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -926,6 +986,69 @@ definitions:
             status:
               type: integer
               description: event active status
+  UpdatePrayerTimeInput:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Masjid Prayer Time row Id
+      fajr:
+        type: string
+        description: Fajr Prayer Time
+      dhuhr:
+        type: string
+        description: Dhuhr Prayer Time
+      asr: 
+        type: 'string'
+        description: Asr Prayer Time
+      maghrib:
+        type: string
+        description: Maghrib Prayer Time
+      isha:
+        type: string
+        description: Isha Prayer Time
+      jummah1:
+        type: string
+        description: Jummah 1 Prayer Time
+      jummah2:
+        type: ['string','null']
+        description: Jummah 2 Prayer Time
+    required:
+      - id
+  UpdatePrayerTimeResponse:
+    required:
+      - error
+      - time
+    properties:
+      error:
+        type: boolean
+      time:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Masjid Prayer Time row Id
+            fajr:
+              type: string
+              description: Fajr Prayer Time
+            dhuhr:
+              type: string
+              description: Dhuhr Prayer Time
+            asr: 
+              type: 'string'
+              description: Asr Prayer Time
+            maghrib:
+              type: string
+              description: Maghrib Prayer Time
+            isha:
+              type: string
+              description: Isha Prayer Time
+            jummah1:
+              type: string
+              description: Jummah 1 Prayer Time
+            jummah2:
+              type: ['string','null']
+              description: Jummah 2 Prayer Time 
               
   UnauthorizedError:
     properties:
