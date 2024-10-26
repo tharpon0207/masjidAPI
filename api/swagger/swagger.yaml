@@ -169,7 +169,7 @@ paths:
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/CreateEventResponse"
+            $ref: "#/definitions/CreateAnnouncementResponse"
         "401":
           description: Unauthorized Error
           schema:
@@ -202,7 +202,7 @@ paths:
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/CreateEventResponse"
+            $ref: "#/definitions/CreateAnnouncementResponse"
         "401":
           description: Unauthorized Error
           schema:
@@ -887,7 +887,7 @@ definitions:
       - id 
       - date
       - title
-  
+
   AllAnnouncementResponse:
     required:
       - error
