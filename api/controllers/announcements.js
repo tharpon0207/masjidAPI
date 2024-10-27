@@ -116,6 +116,10 @@ function getAllAnnouncements(req, res, next) {
 
 
   Announcements.findAndCountAll({
+    order: [
+      ['id', 'DESC'],
+      ['created_at', 'DESC'],
+    ],
     attributes: ['id', [Sequelize.fn('CONCAT_WS', ',', Sequelize.fn('MONTHNAME', Sequelize.col('date')), Sequelize.fn('DAY', Sequelize.col('date')), Sequelize.fn('YEAR', Sequelize.col('date'))), 'date'], 'title', ['description', 'desc'], 'publish', 'status'],
     offset: offset,
     limit: limit,
