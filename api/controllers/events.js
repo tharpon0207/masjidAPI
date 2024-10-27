@@ -122,7 +122,10 @@ function getAllEvents(req, res, next) {
 
 
   Events.findAndCountAll({
-    attributes: ['id', [Sequelize.fn('MONTHNAME', Sequelize.col('date')), 'month'], [Sequelize.fn('DAY', Sequelize.col('date')), 'day'], 'start', 'end', 'title', ['description', 'desc'], 'publish', 'status'], offset: offset,
+    order: [
+      ['date', 'ASC'],
+    ],
+    attributes: ['id', [Sequelize.fn('DATE_FORMAT', Sequelize.col('date'),'%b'), 'month'], [Sequelize.fn('DAY', Sequelize.col('date')), 'day'], 'start', 'end', 'title', ['description', 'desc'], 'publish', 'status'], offset: offset,
     limit: limit,
   })
     .then(data => {
