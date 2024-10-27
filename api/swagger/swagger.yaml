@@ -1023,33 +1023,16 @@ definitions:
       error:
         type: boolean
       time:
+        type: array
+        items:
           type: object
           properties:
-            id:
-              type: integer
-              description: Masjid Prayer Time row Id
-            fajr:
+            prayer:
               type: string
-              description: Fajr Prayer Time
-            dhuhr:
+              description: Name of the Prayer i.e. Fajr, Dhuhr, Asr, Magribh, Isha, ..
+            time:
               type: string
-              description: Dhuhr Prayer Time
-            asr: 
-              type: 'string'
-              description: Asr Prayer Time
-            maghrib:
-              type: string
-              description: Maghrib Prayer Time
-            isha:
-              type: string
-              description: Isha Prayer Time
-            jummah1:
-              type: string
-              description: Jummah 1 Prayer Time
-            jummah2:
-              type: ['string','null']
-              description: Jummah 2 Prayer Time 
-              
+              description: Prayer Time i.e Dhuhr, 01:30 PM
   UnauthorizedError:
     properties:
       error:

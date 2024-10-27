@@ -7,12 +7,23 @@ const { Sequelize, where } = require('sequelize');
 let Op = Sequelize.Op;
 
 module.exports = { getPrayerTimes, updatePrayerTime }
+function capitalize(s) {
+    return String(s[0]).toUpperCase() + String(s).slice(1);
+}
 
 function getPrayerTimes(req, res, next) {
-    Prayertimes.findOne({ where: { status: 1 }, attributes: { exclude: ['updated_at'] } })
+    Prayertimes.findOne({ where: { status: 1 }, attributes: { exclude: ['id', 'updated_at'] } })
         .then(data => {
             if (data != null) {
-                res.json({ error: false, time: data });
+                let prayerList = [];
+                const keys = Object.keys(data.dataValues);
+                for (let key of keys) {
+                    let obj = {};
+                    obj.prayer = capitalize(key);
+                    obj.time = data.dataValues[key];
+                    prayerList.push(obj);
+                }
+                res.json({ error: false, time: prayerList });
             } else {
                 res.status(500).json({ error: true, message: "some error occured while processing the request" });
             }
@@ -55,11 +66,19 @@ function updatePrayerTime(req, res, next) {
     ).then(data => {
         if (data !== null) {
             Prayertimes.findOne({
-                where: { id: times.id }, attributes: { exclude: ['updated_at'] }
+                where: { id: times.id }, attributes: { exclude: ['id','updated_at'] }
             })
                 .then(data => {
                     if (data != null) {
-                        res.json({ error: false, time: data });
+                        let prayerList = [];
+                        const keys = Object.keys(data.dataValues);
+                        for (let key of keys) {
+                            let obj = {};
+                            obj.prayer = capitalize(key);
+                            obj.time = data.dataValues[key];
+                            prayerList.push(obj);
+                        }
+                        res.json({ error: false, time: prayerList });
                     } else {
                         res.status(500).json({ error: true, message: "some error occured while processing the request" });
                     }
